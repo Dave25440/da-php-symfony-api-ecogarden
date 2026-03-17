@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -18,6 +19,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(name: 'email', length: 180)]
+    #[Assert\NotBlank(message: 'L\'email est obligatoire.')]
+    #[Assert\Email(message: 'Le format de l\'email est invalide.')]
     private ?string $email = null;
 
     /**
@@ -30,9 +33,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column(name: 'password')]
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire.')]
+    #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')]
     private ?string $password = null;
 
     #[ORM\Column(name: 'city', length: 255)]
+    #[Assert\NotBlank(message: 'La ville est obligatoire.')]
+    #[Assert\Length(max: 255, maxMessage: 'La ville ne doit pas dépasser {{ limit }} caractères.')]
     private ?string $city = null;
 
     public function getId(): ?int
