@@ -2,18 +2,25 @@
 
 namespace App\Controller;
 
+use App\Repository\TipRepository;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class TipController extends AbstractController
 {
-    #[Route('/tip', name: 'app_tip')]
-    public function index(): JsonResponse
+    public function __construct(
+        private readonly SerializerInterface $serializer,
+    ) {}
+
+    #[Route('/api/tips', name: 'tips_index', methods: ['GET'])]
+    public function index(TipRepository $tipRepository): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/TipController.php',
-        ]);
+        $tips = $tipRepository->findAll();
+        $jsonTips = $this->serializer->serialize($tips, 'json');
+
+        return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
     }
 }
