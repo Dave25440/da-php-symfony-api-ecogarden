@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Month;
 use App\Entity\Tip;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -16,7 +17,21 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        $monthNames = [
+            1 => 'Janvier', 2 => 'Février', 3 => 'Mars', 4 => 'Avril',
+            5 => 'Mai', 6 => 'Juin', 7 => 'Juillet', 8 => 'Août',
+            9 => 'Septembre', 10 => 'Octobre', 11 => 'Novembre', 12 => 'Décembre'
+        ];
+
+        $months = [];
+
+        foreach ($monthNames as $number => $name) {
+            $month = new Month();
+            $month->setNumber($number);
+            $month->setName($name);
+            $manager->persist($month);
+            $months[$number] = $month;
+        }
 
         for ($count = 1; $count <= 20; $count++) { 
             $tip = new Tip();
@@ -31,7 +46,9 @@ class AppFixtures extends Fixture
                 $randMonths = array_map(fn($key) => $months[$key], $keys);
             }
 
-            $tip->setMonths($randMonths);
+            foreach ($randMonths as $month) {
+                $tip->addMonth($month);
+            }
 
             $manager->persist($tip);
         }
