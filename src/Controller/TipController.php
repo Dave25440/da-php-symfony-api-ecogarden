@@ -19,7 +19,8 @@ final class TipController extends AbstractController
     #[Route('/api/tips', name: 'tips_index', methods: ['GET'])]
     public function index(TipRepository $tipRepository): JsonResponse
     {
-        $tips = $tipRepository->findByCurrentMonth();
+        $currentMonth = (int) date('n');
+        $tips = $tipRepository->findByMonth($currentMonth);
 
         $context = SerializationContext::create()->setGroups(['tip_list']);
         $jsonTips = $this->serializer->serialize($tips, 'json', $context);

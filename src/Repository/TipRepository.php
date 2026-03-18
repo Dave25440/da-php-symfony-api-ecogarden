@@ -16,14 +16,12 @@ class TipRepository extends ServiceEntityRepository
         parent::__construct($registry, Tip::class);
     }
 
-    public function findByCurrentMonth(): array
+    public function findByMonth(int $month): array
     {
-        $currentMonth = (int) date('n');
-
         return $this->createQueryBuilder('t')
             ->innerJoin('t.months', 'm')
             ->andWhere('m.number = :month')
-            ->setParameter('month', $currentMonth)
+            ->setParameter('month', $month)
             ->getQuery()
             ->getResult()
         ;
