@@ -16,11 +16,11 @@ class Tip
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'id')]
-    #[Groups(['tip_list'])]
+    #[Groups(['tip_list', 'tip_detail'])]
     private ?int $id = null;
 
     #[ORM\Column(name: 'content', type: Types::TEXT)]
-    #[Groups(['tip_list'])]
+    #[Groups(['tip_list', 'tip_detail'])]
     #[Assert\NotBlank(message: 'Le conseil est obligatoire.')]
     private ?string $content = null;
 
