@@ -27,4 +27,15 @@ final class TipController extends AbstractController
 
         return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
     }
+
+    #[Route('/api/tips/{month}', name: 'tips_show', methods: ['GET'], requirements: ['month' => '^(1[0-2]|[1-9])$'])]
+    public function show(TipRepository $tipRepository, int $month): JsonResponse
+    {
+        $tips = $tipRepository->findByMonth($month);
+
+        $context = SerializationContext::create()->setGroups(['tip_detail']);
+        $jsonTips = $this->serializer->serialize($tips, 'json', $context);
+
+        return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
+    }
 }
