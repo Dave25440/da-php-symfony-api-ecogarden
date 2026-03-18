@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TipRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,12 +21,22 @@ class Tip
     #[Assert\NotBlank(message: 'Le conseil est obligatoire.')]
     private ?string $content = null;
 
-    #[ORM\Column(name: 'months', type: Types::SIMPLE_ARRAY)]
+    /**
+     * @var Collection<int, Month>
+     */
+    #[ORM\ManyToMany(targetEntity: Month::class, inversedBy: 'tips')]
+    #[ORM\JoinTable(
+        name: 'tip_month',
+        joinColumns: [new ORM\JoinColumn(name: 'tip_id', referencedColumnName: 'id')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'month_id', referencedColumnName: 'id')]
+    )]
     #[Assert\Count(min: 1, minMessage: 'Au moins un mois doit être sélectionné.')]
-    #[Assert\All([
-        new Assert\Choice(choices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], message: 'Le mois numéro {{ value }} est invalide.')
-    ])]
-    private array $months = [];
+    private Collection $months;
+
+    public function __construct()
+    {
+        $this->months = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -43,14 +55,29 @@ class Tip
         return $this;
     }
 
-    public function getMonths(): array
+    /**
+     * @return Collection<int, Month>
+     */
+    public function getMonths(): Collection
     {
         return $this->months;
     }
 
-    public function setMonths(array $months): static
+    public function addMonth(Month $month): static
     {
-        $this->months = $months;
+        if (!$this->months->contains($month)) {
+            $this->months->add($month);
+            $month->addTip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMonth(Month $month): static
+    {
+        if ($this->months->removeElement($month)) {
+            $month->removeTip($this);
+        }
 
         return $this;
     }
