@@ -44,6 +44,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_detail'])]
     #[Assert\NotBlank(message: 'La ville est obligatoire.')]
     #[Assert\Length(max: 255, maxMessage: 'La ville ne doit pas dépasser {{ limit }} caractères.')]
+    #[Assert\Regex(
+        pattern: '/^\D+$/',
+        message: 'La ville ne doit pas contenir de chiffres.'
+    )]
     private ?string $city = null;
 
     public function getId(): ?int
