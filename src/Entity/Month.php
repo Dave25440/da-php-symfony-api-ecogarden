@@ -6,15 +6,25 @@ use App\Repository\MonthRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MonthRepository::class)]
+#[UniqueEntity(fields: ['number'], message: 'Ce numéro de mois existe déjà.')]
 class Month
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'id')]
     private ?int $id = null;
+
+    #[ORM\Column(name: 'number', unique: true)]
+    #[Assert\NotNull(message: 'Le numéro du mois est obligatoire.')]
+    #[Assert\Choice(
+        choices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        message: 'Le mois numéro {{ value }} est invalide.'
+    )]
+    private ?int $number = null;
 
     #[ORM\Column(name: 'name', length: 255)]
     #[Assert\NotBlank(message: 'Le nom du mois est obligatoire.')]
@@ -41,6 +51,18 @@ class Month
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getNumber(): ?int
+    {
+        return $this->number;
+    }
+
+    public function setNumber(int $number): static
+    {
+        $this->number = $number;
+
+        return $this;
     }
 
     public function getName(): ?string
