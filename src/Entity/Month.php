@@ -6,6 +6,7 @@ use App\Repository\MonthRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MonthRepository::class)]
 class Month
@@ -16,6 +17,14 @@ class Month
     private ?int $id = null;
 
     #[ORM\Column(name: 'name', length: 255)]
+    #[Assert\NotBlank(message: 'Le nom du mois est obligatoire.')]
+    #[Assert\Choice(
+        choices: [
+            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+        ],
+        message: 'Le nom du mois "{{ value }}" est invalide.'
+    )]
     private ?string $name = null;
 
     /**
