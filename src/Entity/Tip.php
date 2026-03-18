@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TipRepository::class)]
@@ -15,9 +16,11 @@ class Tip
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'id')]
+    #[Groups(['tip_list'])]
     private ?int $id = null;
 
     #[ORM\Column(name: 'content', type: Types::TEXT)]
+    #[Groups(['tip_list'])]
     #[Assert\NotBlank(message: 'Le conseil est obligatoire.')]
     private ?string $content = null;
 
@@ -30,6 +33,7 @@ class Tip
         joinColumns: [new ORM\JoinColumn(name: 'tip_id', referencedColumnName: 'id')],
         inverseJoinColumns: [new ORM\JoinColumn(name: 'month_id', referencedColumnName: 'id')]
     )]
+    #[Groups(['tip_list'])]
     #[Assert\Count(min: 1, minMessage: 'Au moins un mois doit être sélectionné.')]
     private Collection $months;
 

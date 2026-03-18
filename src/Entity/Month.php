@@ -6,6 +6,7 @@ use App\Repository\MonthRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -19,6 +20,7 @@ class Month
     private ?int $id = null;
 
     #[ORM\Column(name: 'number', unique: true)]
+    #[Groups(['tip_list'])]
     #[Assert\NotNull(message: 'Le numéro du mois est obligatoire.')]
     #[Assert\Choice(
         choices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
@@ -27,6 +29,7 @@ class Month
     private ?int $number = null;
 
     #[ORM\Column(name: 'name', length: 255)]
+    #[Groups(['tip_list'])]
     #[Assert\NotBlank(message: 'Le nom du mois est obligatoire.')]
     #[Assert\Choice(
         choices: [
