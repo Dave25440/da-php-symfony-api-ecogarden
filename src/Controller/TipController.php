@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\TipRepository;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,8 +19,10 @@ final class TipController extends AbstractController
     #[Route('/api/tips', name: 'tips_index', methods: ['GET'])]
     public function index(TipRepository $tipRepository): JsonResponse
     {
-        $tips = $tipRepository->findAll();
-        $jsonTips = $this->serializer->serialize($tips, 'json');
+        $tips = $tipRepository->findByCurrentMonth();
+
+        $context = SerializationContext::create()->setGroups(['tip_list']);
+        $jsonTips = $this->serializer->serialize($tips, 'json', $context);
 
         return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
     }
