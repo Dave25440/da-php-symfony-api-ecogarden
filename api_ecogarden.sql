@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : mar. 17 mars 2026 à 16:13
+-- Généré le : mer. 18 mars 2026 à 15:03
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.30
 
@@ -38,7 +38,38 @@ CREATE TABLE `doctrine_migration_versions` (
 --
 
 INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
-('DoctrineMigrations\\Version20260317142555', '2026-03-17 14:26:18', 10);
+('DoctrineMigrations\\Version20260317142555', '2026-03-17 14:26:18', 10),
+('DoctrineMigrations\\Version20260318150025', '2026-03-18 15:00:44', 54);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `month`
+--
+
+CREATE TABLE `month` (
+  `id` int NOT NULL,
+  `number` int NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `month`
+--
+
+INSERT INTO `month` (`id`, `number`, `name`) VALUES
+(1, 1, 'Janvier'),
+(2, 2, 'Février'),
+(3, 3, 'Mars'),
+(4, 4, 'Avril'),
+(5, 5, 'Mai'),
+(6, 6, 'Juin'),
+(7, 7, 'Juillet'),
+(8, 8, 'Août'),
+(9, 9, 'Septembre'),
+(10, 10, 'Octobre'),
+(11, 11, 'Novembre'),
+(12, 12, 'Décembre');
 
 -- --------------------------------------------------------
 
@@ -48,35 +79,95 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 
 CREATE TABLE `tip` (
   `id` int NOT NULL,
-  `content` longtext NOT NULL,
-  `months` longtext NOT NULL
+  `content` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `tip`
 --
 
-INSERT INTO `tip` (`id`, `content`, `months`) VALUES
-(1, 'Conseil 1 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '7'),
-(2, 'Conseil 2 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '6,7,9'),
-(3, 'Conseil 3 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '7,12'),
-(4, 'Conseil 4 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '1,12'),
-(5, 'Conseil 5 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '5,8,10'),
-(6, 'Conseil 6 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2'),
-(7, 'Conseil 7 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '1,7'),
-(8, 'Conseil 8 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '8,11'),
-(9, 'Conseil 9 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '5,9'),
-(10, 'Conseil 10 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '5,6,11'),
-(11, 'Conseil 11 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '4,7'),
-(12, 'Conseil 12 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '3,6'),
-(13, 'Conseil 13 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '5,7,9'),
-(14, 'Conseil 14 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '8'),
-(15, 'Conseil 15 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '3,6'),
-(16, 'Conseil 16 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '3'),
-(17, 'Conseil 17 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '1,2,12'),
-(18, 'Conseil 18 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '8,9'),
-(19, 'Conseil 19 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '10'),
-(20, 'Conseil 20 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2');
+INSERT INTO `tip` (`id`, `content`) VALUES
+(1, 'Conseil 1 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(2, 'Conseil 2 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(3, 'Conseil 3 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(4, 'Conseil 4 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(5, 'Conseil 5 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(6, 'Conseil 6 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(7, 'Conseil 7 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(8, 'Conseil 8 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(9, 'Conseil 9 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(10, 'Conseil 10 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(11, 'Conseil 11 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(12, 'Conseil 12 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(13, 'Conseil 13 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(14, 'Conseil 14 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(15, 'Conseil 15 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(16, 'Conseil 16 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(17, 'Conseil 17 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(18, 'Conseil 18 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(19, 'Conseil 19 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(20, 'Conseil 20 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `tip_month`
+--
+
+CREATE TABLE `tip_month` (
+  `tip_id` int NOT NULL,
+  `month_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `tip_month`
+--
+
+INSERT INTO `tip_month` (`tip_id`, `month_id`) VALUES
+(1, 4),
+(1, 6),
+(1, 9),
+(2, 2),
+(3, 1),
+(3, 4),
+(3, 11),
+(4, 5),
+(5, 11),
+(6, 2),
+(6, 7),
+(6, 10),
+(7, 6),
+(7, 10),
+(8, 4),
+(9, 5),
+(9, 7),
+(9, 9),
+(10, 1),
+(10, 3),
+(10, 12),
+(11, 5),
+(11, 6),
+(11, 7),
+(12, 2),
+(12, 4),
+(13, 1),
+(13, 5),
+(13, 12),
+(14, 5),
+(14, 7),
+(14, 8),
+(15, 1),
+(15, 10),
+(15, 12),
+(16, 5),
+(16, 6),
+(16, 7),
+(17, 11),
+(18, 4),
+(18, 10),
+(19, 8),
+(19, 12),
+(20, 6);
 
 -- --------------------------------------------------------
 
@@ -97,8 +188,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `email`, `roles`, `password`, `city`) VALUES
-(1, 'user@ecogarden.com', '[\"ROLE_USER\"]', '$2y$13$Qapfd9gnNs0MtOmvwiVVjOMYAVUq8xF2K3FWiKT1x1hpZnOWCciv2', 'Marseille'),
-(2, 'admin@ecogarden.com', '[\"ROLE_ADMIN\"]', '$2y$13$LvLIEcbKtCrelHDAIMlsIetENXhjS8e8ZUHLX6jylRcOIPtis9Eiy', 'Paris');
+(1, 'user@ecogarden.com', '[\"ROLE_USER\"]', '$2y$13$FsxiYVSlvk.mEc7Rq3DmFeh5PSmVrIucomTKkiEUJl1e01d1o9cuW', 'Marseille'),
+(2, 'admin@ecogarden.com', '[\"ROLE_ADMIN\"]', '$2y$13$SnKAMo6tWm7aQYDPCIj8muMrUpQfdcQ/CN5c4QZS.nIPaWBDxgeT6', 'Paris');
 
 --
 -- Index pour les tables déchargées
@@ -111,10 +202,25 @@ ALTER TABLE `doctrine_migration_versions`
   ADD PRIMARY KEY (`version`);
 
 --
+-- Index pour la table `month`
+--
+ALTER TABLE `month`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UNIQ_8EB6100696901F54` (`number`);
+
+--
 -- Index pour la table `tip`
 --
 ALTER TABLE `tip`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `tip_month`
+--
+ALTER TABLE `tip_month`
+  ADD PRIMARY KEY (`tip_id`,`month_id`),
+  ADD KEY `IDX_DDC6B0F5476C47F6` (`tip_id`),
+  ADD KEY `IDX_DDC6B0F5A0CBDE4` (`month_id`);
 
 --
 -- Index pour la table `user`
@@ -128,6 +234,12 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT pour la table `month`
+--
+ALTER TABLE `month`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT pour la table `tip`
 --
 ALTER TABLE `tip`
@@ -138,6 +250,17 @@ ALTER TABLE `tip`
 --
 ALTER TABLE `user`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `tip_month`
+--
+ALTER TABLE `tip_month`
+  ADD CONSTRAINT `FK_DDC6B0F5476C47F6` FOREIGN KEY (`tip_id`) REFERENCES `tip` (`id`),
+  ADD CONSTRAINT `FK_DDC6B0F5A0CBDE4` FOREIGN KEY (`month_id`) REFERENCES `month` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
