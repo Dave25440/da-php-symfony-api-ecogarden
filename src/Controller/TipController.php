@@ -105,4 +105,70 @@ final class TipController extends AbstractController
 
         return new JsonResponse($jsonTip, Response::HTTP_CREATED, [], true);	
     }
+
+    #[Route('/api/tips/{id}', name: 'tips_update', methods: ['PUT'], requirements: ['id' => '\d+'],)]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour ajouter un conseil.')]
+    public function update(
+        Request $request,
+        Tip $tip,
+        MonthRepository $monthRepository,
+        ValidatorInterface $validator,
+        EntityManagerInterface $manager,
+    ): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if ($data === null || !is_array($data)) {
+            return new JsonResponse(
+                json_encode(['error' => 'Les données sont invalides.']),
+                JsonResponse::HTTP_BAD_REQUEST,
+                [],
+                true
+            );
+        }
+
+        $tip->setContent($data['content'] ?? '');
+
+        foreach ($tip->getMonths() as $existingMonth) {
+            $tip->removeMonth($existingMonth);
+        }
+
+        $months = $data['months'] ?? [];
+
+        if (is_array($months) && !empty($months)) {
+            foreach ($months as $number) {
+                $month = $monthRepository->findOneBy(['number' => (int) $number]);
+
+                if (!$month) {
+                    return new JsonResponse(
+                        json_encode(['error' => 'Le mois numéro ' . $number . ' est invalide.']),
+                        JsonResponse::HTTP_BAD_REQUEST,
+                        [],
+                        true
+                    );
+                }
+
+                $tip->addMonth($month);
+            }
+        }
+
+        $errors = $validator->validate($tip);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse(
+                $this->serializer->serialize($errors, 'json'),
+                JsonResponse::HTTP_BAD_REQUEST,
+                [],
+                true
+            );
+        }
+
+        $manager->persist($tip);
+        $manager->flush();
+
+        $context = SerializationContext::create()->setGroups(['tip_list']);
+        $jsonTip = $this->serializer->serialize($tip, 'json', $context);
+
+        return new JsonResponse($jsonTip, Response::HTTP_OK, [], true);	
+    }
 }
