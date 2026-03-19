@@ -30,6 +30,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var list<string> The user roles
      */
     #[ORM\Column(name: 'roles')]
+    #[Groups(['user_edit'])]
+    #[Assert\Choice(
+        choices: ['ROLE_USER', 'ROLE_ADMIN'],
+        multiple: true,
+        multipleMessage: 'Le rôle {{ value }} est invalide.'
+    )]
     private array $roles = [];
 
     /**
