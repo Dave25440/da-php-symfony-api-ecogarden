@@ -66,7 +66,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/api/users/{id}', name: 'users_update', methods: ['PUT'], requirements: ['id' => '\d+'],)]
-    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour ajouter un conseil.')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour mettre à jour un compte.')]
     public function update(
         Request $request,
         UserRepository $userRepository,
@@ -131,5 +131,15 @@ final class UserController extends AbstractController
         $jsonUser = $this->serializer->serialize($user, 'json', $context);
 
         return new JsonResponse($jsonUser, Response::HTTP_OK, [], true);	
+    }
+
+    #[Route('/api/users/{id}', name: 'users_delete', methods: ['DELETE'], requirements: ['id' => '\d+'],)]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un compte.')]
+    public function delete(EntityManagerInterface $manager, User $user): JsonResponse
+    {
+        $manager->remove($user);
+        $manager->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }
