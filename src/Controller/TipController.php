@@ -116,39 +116,33 @@ final class TipController extends AbstractController
         EntityManagerInterface $manager,
     ): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $updatedTip = $this->serializer->deserialize($request->getContent(), Tip::class, 'json');
 
-        if ($data === null || !is_array($data)) {
-            return new JsonResponse(
-                json_encode(['error' => 'Les données sont invalides.']),
-                JsonResponse::HTTP_BAD_REQUEST,
-                [],
-                true
-            );
+        if($updatedTip->getContent() !== null) {
+            $tip->setContent($updatedTip->getContent());
         }
 
-        $tip->setContent($data['content'] ?? '');
+        $content = $request->toArray();
+        $monthNumbers = $content['monthNumbers'] ?? null;
 
-        foreach ($tip->getMonths() as $existingMonth) {
-            $tip->removeMonth($existingMonth);
-        }
+        if (is_array($monthNumbers)) {
+            $existingMonths = array_map(fn($month) => $month->getNumber(), $tip->getMonths()->toArray());
 
-        $months = $data['months'] ?? [];
+            $toAdd = array_diff($monthNumbers, $existingMonths);
+            $toRemove = array_diff($existingMonths, $monthNumbers);
 
-        if (is_array($months) && !empty($months)) {
-            foreach ($months as $number) {
+            foreach ($toAdd as $number) {
                 $month = $monthRepository->findOneBy(['number' => (int) $number]);
 
-                if (!$month) {
-                    return new JsonResponse(
-                        json_encode(['error' => 'Le mois numéro ' . $number . ' est invalide.']),
-                        JsonResponse::HTTP_BAD_REQUEST,
-                        [],
-                        true
-                    );
+                if ($month) {
+                    $tip->addMonth($month);
                 }
+            }
 
-                $tip->addMonth($month);
+            foreach ($tip->getMonths() as $month) {
+                if (in_array($month->getNumber(), $toRemove)) {
+                    $tip->removeMonth($month);
+                }
             }
         }
 
