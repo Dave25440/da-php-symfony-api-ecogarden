@@ -76,12 +76,12 @@ final class UserController extends AbstractController
         EntityManagerInterface $manager
     ): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $updatedUser = $this->serializer->deserialize($request->getContent(), User::class, 'json');
 
-        if (isset($data['email'])) {
-            $existingUser = $userRepository->findOneBy(['email' => $data['email']]);
+        if ($updatedUser->getEmail() !== null) {
+            $existingUser = $userRepository->findOneBy(['email' => $updatedUser->getEmail()]);
 
-            if ($existingUser && $existingUser !== $user) {
+            if ($existingUser && $existingUser->getId() !== $user->getId()) {
                 return new JsonResponse(
                     json_encode(['error' => 'Cette adresse email est déjà utilisée.']),
                     JsonResponse::HTTP_CONFLICT,
@@ -90,15 +90,22 @@ final class UserController extends AbstractController
                 );
             }
 
-            $user->setEmail($data['email']);
+            $user->setEmail($updatedUser->getEmail());
         }
 
-        if (isset($data['roles'])) {
-            $user->setRoles($data['roles']);
+        $content = $request->toArray();
+        $roles = $content['roles'] ?? null;
+
+        if (is_array($roles)) {
+            $user->setRoles($roles);
         }
 
-        if (isset($data['city'])) {
-            $user->setCity($data['city']);
+        if ($updatedUser->getPassword() !== null) {
+            $user->setPassword($updatedUser->getPassword());
+        }
+
+        if ($updatedUser->getCity() !== null) {
+            $user->setCity($updatedUser->getCity());
         }
 
         $errors = $validator->validate($user);
@@ -112,8 +119,8 @@ final class UserController extends AbstractController
             );
         }
 
-        if (isset($data['password'])) {
-            $hashedPassword = $hasher->hashPassword($user, $data['password']);
+        if ($updatedUser->getPassword() !== null) {
+            $hashedPassword = $hasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hashedPassword);
         }
 
