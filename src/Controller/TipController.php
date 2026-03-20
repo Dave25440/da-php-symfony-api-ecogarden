@@ -96,7 +96,7 @@ final class TipController extends AbstractController
     }
 
     #[Route('/api/tips/{id}', name: 'tips_update', methods: ['PUT'], requirements: ['id' => '\d+'],)]
-    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour ajouter un conseil.')]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour mettre à jour un conseil.')]
     public function update(
         Request $request,
         Tip $tip,
@@ -153,5 +153,15 @@ final class TipController extends AbstractController
         $jsonTip = $this->serializer->serialize($tip, 'json', $context);
 
         return new JsonResponse($jsonTip, Response::HTTP_OK, [], true);	
+    }
+
+    #[Route('/api/tips/{id}', name: 'tips_delete', methods: ['DELETE'], requirements: ['id' => '\d+'],)]
+    #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un conseil.')]
+    public function delete(EntityManagerInterface $manager, Tip $tip): JsonResponse
+    {
+        $manager->remove($tip);
+        $manager->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }
