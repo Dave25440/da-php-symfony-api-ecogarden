@@ -54,36 +54,25 @@ final class TipController extends AbstractController
         EntityManagerInterface $manager
     ): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-
-        if ($data === null || !is_array($data)) {
-            return new JsonResponse(
-                json_encode(['error' => 'Les données sont invalides.']),
-                JsonResponse::HTTP_BAD_REQUEST,
-                [],
-                true
-            );
-        }
+        $content = $request->toArray();
 
         $tip = new Tip();
-        $tip->setContent($data['content'] ?? '');
-        $months = $data['months'] ?? [];
+        $tip->setContent($content['content'] ?? '');
+        $monthNumbers = $content['monthNumbers'] ?? [];
 
-        if (is_array($months) && !empty($months)) {
-            foreach ($months as $number) {
-                $month = $monthRepository->findOneBy(['number' => (int) $number]);
+        foreach ($monthNumbers as $number) {
+            $month = $monthRepository->findOneBy(['number' => (int) $number]);
 
-                if (!$month) {
-                    return new JsonResponse(
-                        json_encode(['error' => 'Le mois numéro ' . $number . ' est invalide.']),
-                        JsonResponse::HTTP_BAD_REQUEST,
-                        [],
-                        true
-                    );
-                }
-
-                $tip->addMonth($month);
+            if (!$month) {
+                return new JsonResponse(
+                    json_encode(['error' => 'Le mois numéro ' . $number . ' est invalide.']),
+                    JsonResponse::HTTP_BAD_REQUEST,
+                    [],
+                    true
+                );
             }
+
+            $tip->addMonth($month);
         }
 
         $errors = $validator->validate($tip);
