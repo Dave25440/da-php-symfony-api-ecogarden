@@ -19,6 +19,7 @@ final class WeatherController extends AbstractController
     #[Route('/api/weather', name: 'weather_index', methods: ['GET'])]
     public function index(WeatherService $weatherService): JsonResponse
     {
+        /** @var \App\Entity\User|null $user */
         $user = $this->getUser();
 
         if (!$user || !$user->getCity()) {
