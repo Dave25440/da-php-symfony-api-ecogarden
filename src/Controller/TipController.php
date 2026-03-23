@@ -15,21 +15,35 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 final class TipController extends AbstractController
 {
     public function __construct(
+        private readonly TagAwareCacheInterface $cache,
         private readonly SerializerInterface $serializer,
     ) {}
 
     #[Route('/api/tips', name: 'tips_index', methods: ['GET'])]
     public function index(TipRepository $tipRepository): JsonResponse
     {
-        $currentMonth = (int) date('n');
-        $tips = $tipRepository->findByMonth($currentMonth);
+        $now = new \DateTimeImmutable();
+        $currentMonth = (int) $now->format('n');
+        $cacheKey = 'tips_month_' . $currentMonth;
 
-        $context = SerializationContext::create()->setGroups(['tip_list']);
-        $jsonTips = $this->serializer->serialize($tips, 'json', $context);
+        $jsonTips = $this->cache->get($cacheKey, function (ItemInterface $item) use ($now, $tipRepository, $currentMonth) {
+            $nextMonth = $now->modify('first day of next month midnight');
+            $untilNextMonth = $nextMonth->getTimestamp() - $now->getTimestamp();
+
+            $item->expiresAfter($untilNextMonth);
+            $item->tag('tips_cache');
+
+            $tips = $tipRepository->findByMonth($currentMonth);
+
+            $context = SerializationContext::create()->setGroups(['tip_list']);
+            return $this->serializer->serialize($tips, 'json', $context);
+        });
 
         return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
     }
@@ -37,10 +51,21 @@ final class TipController extends AbstractController
     #[Route('/api/tips/{month}', name: 'tips_show', methods: ['GET'], requirements: ['month' => '^(1[0-2]|[1-9])$'])]
     public function show(TipRepository $tipRepository, int $month): JsonResponse
     {
-        $tips = $tipRepository->findByMonth($month);
+        $now = new \DateTimeImmutable();
+        $cacheKey = 'tips_month_' . $month;
 
-        $context = SerializationContext::create()->setGroups(['tip_detail']);
-        $jsonTips = $this->serializer->serialize($tips, 'json', $context);
+        $jsonTips = $this->cache->get($cacheKey, function (ItemInterface $item) use ($month, $now, $tipRepository) {
+            $nextMonth = $now->modify('first day of next month midnight');
+            $untilNextMonth = $nextMonth->getTimestamp() - $now->getTimestamp();
+
+            $item->expiresAfter($untilNextMonth);
+            $item->tag('tips_cache');
+
+            $tips = $tipRepository->findByMonth($month);
+
+            $context = SerializationContext::create()->setGroups(['tip_detail']);
+            return $this->serializer->serialize($tips, 'json', $context);
+        });
 
         return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
     }
@@ -88,6 +113,8 @@ final class TipController extends AbstractController
 
         $manager->persist($tip);
         $manager->flush();
+
+        $this->cache->invalidateTags(['tips_cache']);
 
         $context = SerializationContext::create()->setGroups(['tip_list']);
         $jsonTip = $this->serializer->serialize($tip, 'json', $context);
@@ -149,6 +176,8 @@ final class TipController extends AbstractController
         $manager->persist($tip);
         $manager->flush();
 
+        $this->cache->invalidateTags(['tips_cache']);
+
         $context = SerializationContext::create()->setGroups(['tip_list']);
         $jsonTip = $this->serializer->serialize($tip, 'json', $context);
 
@@ -161,6 +190,8 @@ final class TipController extends AbstractController
     {
         $manager->remove($tip);
         $manager->flush();
+
+        $this->cache->invalidateTags(['tips_cache']);
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
