@@ -16,7 +16,7 @@ final class WeatherController extends AbstractController
         private readonly SerializerInterface $serializer,
     ) {}
 
-    #[Route('/api/weather', name: 'weather_index', methods: ['GET'])]
+    #[Route('/weather', name: 'weather_index', methods: ['GET'])]
     public function index(WeatherService $weatherService): JsonResponse
     {
         /** @var \App\Entity\User|null $user */
@@ -34,7 +34,7 @@ final class WeatherController extends AbstractController
         return new JsonResponse($jsonWeather, Response::HTTP_OK, [], true); 
     }
 
-    #[Route('/api/weather/{city}', name: 'weather_show', methods: ['GET'], requirements: ['city' => '[a-zA-ZÀ-ÿ\' \-]+'])]
+    #[Route('/weather/{city}', name: 'weather_show', methods: ['GET'], requirements: ['city' => '[a-zA-ZÀ-ÿ\' \-]+'])]
     public function show(WeatherService $weatherService, string $city): JsonResponse
     {
         $weather = $weatherService->getWeather($city);

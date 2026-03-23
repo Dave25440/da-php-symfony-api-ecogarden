@@ -25,7 +25,7 @@ final class TipController extends AbstractController
         private readonly SerializerInterface $serializer,
     ) {}
 
-    #[Route('/api/tips', name: 'tips_index', methods: ['GET'])]
+    #[Route('/tips', name: 'tips_index', methods: ['GET'])]
     public function index(TipRepository $tipRepository): JsonResponse
     {
         $now = new \DateTimeImmutable();
@@ -48,7 +48,7 @@ final class TipController extends AbstractController
         return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/api/tips/{month}', name: 'tips_show', methods: ['GET'], requirements: ['month' => '^(1[0-2]|[1-9])$'])]
+    #[Route('/tips/{month}', name: 'tips_show', methods: ['GET'], requirements: ['month' => '^(1[0-2]|[1-9])$'])]
     public function show(TipRepository $tipRepository, int $month): JsonResponse
     {
         $now = new \DateTimeImmutable();
@@ -70,7 +70,7 @@ final class TipController extends AbstractController
         return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/api/tips', name: 'tips_create', methods: ['POST'])]
+    #[Route('/tips', name: 'tips_create', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour ajouter un conseil.')]
     public function create(
         Request $request,
@@ -122,7 +122,7 @@ final class TipController extends AbstractController
         return new JsonResponse($jsonTip, Response::HTTP_CREATED, [], true);	
     }
 
-    #[Route('/api/tips/{id}', name: 'tips_update', methods: ['PUT'], requirements: ['id' => '\d+'],)]
+    #[Route('/tips/{id}', name: 'tips_update', methods: ['PUT'], requirements: ['id' => '\d+'],)]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour mettre à jour un conseil.')]
     public function update(
         Request $request,
@@ -184,7 +184,7 @@ final class TipController extends AbstractController
         return new JsonResponse($jsonTip, Response::HTTP_OK, [], true);	
     }
 
-    #[Route('/api/tips/{id}', name: 'tips_delete', methods: ['DELETE'], requirements: ['id' => '\d+'],)]
+    #[Route('/tips/{id}', name: 'tips_delete', methods: ['DELETE'], requirements: ['id' => '\d+'],)]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un conseil.')]
     public function delete(EntityManagerInterface $manager, Tip $tip): JsonResponse
     {

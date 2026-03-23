@@ -9,6 +9,7 @@
 
 controllers:
     resource: routing.controllers
+    prefix: /api/1.0
 
 api_login_check:
-    path: /api/auth
+    path: /api/1.0/auth
