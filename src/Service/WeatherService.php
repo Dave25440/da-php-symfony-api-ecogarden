@@ -10,6 +10,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class WeatherService
 {
     public function __construct(
+        private readonly string $apiKey,
         private readonly SerializerInterface $serializer,
     ) {}
 
@@ -17,7 +18,7 @@ class WeatherService
     {
         $response = $httpClient->request(
             'GET',
-            'https://api.openweathermap.org/data/2.5/weather?q=' . urlencode($city) . ',FR&appid=982da42c1f84b6781c8c3d79763e57db&units=metric&lang=fr'
+            'https://api.openweathermap.org/data/2.5/weather?q=' . urlencode($city) . ',FR&appid=' . $this->apiKey . '&units=metric&lang=fr'
         );
 
         $statusCode = $response->getStatusCode();
