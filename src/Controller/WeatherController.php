@@ -2,18 +2,25 @@
 
 namespace App\Controller;
 
+use App\Service\WeatherService;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class WeatherController extends AbstractController
 {
-    #[Route('/weather', name: 'app_weather')]
-    public function index(): JsonResponse
+    public function __construct(
+        private readonly SerializerInterface $serializer,
+    ) {}
+
+    #[Route('/api/weather/{city}', name: 'weather_show', methods: ['GET'], requirements: ['city' => '[a-zA-ZÀ-ÿ\' \-]+'])]
+    public function show(WeatherService $weatherService, string $city): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/WeatherController.php',
-        ]);
+        $weather = $weatherService->getWeather($city);
+        $jsonWeather = $this->serializer->serialize($weather, 'json');
+
+        return new JsonResponse($jsonWeather, Response::HTTP_OK, [], true); 
     }
 }

@@ -2,21 +2,20 @@
 
 namespace App\Service;
 
-use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class WeatherService
 {
     public function __construct(
+        private readonly HttpClientInterface $httpClient,
         private readonly string $apiKey,
-        private readonly SerializerInterface $serializer,
     ) {}
 
-    public function getWeather(HttpClientInterface $httpClient, string $city): JsonResponse
+    public function getWeather(string $city): array
     {
-        $response = $httpClient->request(
+        $response = $this->httpClient->request(
             'GET',
             'https://api.openweathermap.org/data/2.5/weather?q=' . urlencode($city) . ',FR&appid=' . $this->apiKey . '&units=metric&lang=fr'
         );
@@ -32,7 +31,7 @@ class WeatherService
                 $message = 'La récupération des données météo a échoué.';
             }
 
-            return new JsonResponse(['error' => $message], $status);
+            throw new HttpException($status, $message);
         }
 
         $content = $response->toArray();
@@ -55,8 +54,6 @@ class WeatherService
             'rain_last_hour' => $rain,
         ];
 
-        $jsonWeather = $this->serializer->serialize($weather, 'json');
-
-        return new JsonResponse($jsonWeather, Response::HTTP_OK, [], true);    
+        return $weather;    
     }
 }
