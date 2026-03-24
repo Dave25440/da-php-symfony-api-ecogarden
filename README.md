@@ -31,7 +31,14 @@ Ce projet est une première version de test évolutive.
 
 3. **Configuration**
 
-    Modifiez les informations suivantes dans le fichier **.env** si nécessaire :
+    Dupliquez le fichier **.env** et renommez-le **.env.local**.
+
+    Dans ce fichier **.env.local**, renseignez votre clé API *OpenWeatherMap* :
+    ```ini
+    OPENWEATHERMAP_API_KEY=VOTRE_CLE_API
+    ```
+
+    Modifiez les informations suivantes si nécessaire :
     - Identifiants de connexion à la base de données
     - Chemin d'accès et passphrase des clés SSL
 
