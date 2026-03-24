@@ -7,9 +7,32 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[Hateoas\Relation(
+    'update',
+    href: new Hateoas\Route(
+        'tips_update',
+        parameters: ['id' => 'expr(object.getId())'],
+    ),
+    exclusion: new Hateoas\Exclusion(
+        groups: ['tip_list', 'tip_detail'],
+        excludeIf: "expr(not is_granted('ROLE_ADMIN'))",
+    )
+)]
+#[Hateoas\Relation(
+    'delete',
+    href: new Hateoas\Route(
+        'tips_delete',
+        parameters: ['id' => 'expr(object.getId())'],
+    ),
+    exclusion: new Hateoas\Exclusion(
+        groups: ['tip_list', 'tip_detail'],
+        excludeIf: "expr(not is_granted('ROLE_ADMIN'))",
+    )
+)]
 #[ORM\Entity(repositoryClass: TipRepository::class)]
 class Tip
 {
