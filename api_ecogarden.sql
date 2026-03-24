@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : mer. 18 mars 2026 à 15:03
+-- Généré le : mar. 24 mars 2026 à 16:45
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.30
 
@@ -106,7 +106,8 @@ INSERT INTO `tip` (`id`, `content`) VALUES
 (17, 'Conseil 17 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
 (18, 'Conseil 18 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
 (19, 'Conseil 19 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
-(20, 'Conseil 20 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.');
+(20, 'Conseil 20 : Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+(21, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
 
 -- --------------------------------------------------------
 
@@ -167,7 +168,10 @@ INSERT INTO `tip_month` (`tip_id`, `month_id`) VALUES
 (18, 10),
 (19, 8),
 (19, 12),
-(20, 6);
+(20, 6),
+(21, 3),
+(21, 8),
+(21, 9);
 
 -- --------------------------------------------------------
 
@@ -189,7 +193,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `email`, `roles`, `password`, `city`) VALUES
 (1, 'user@ecogarden.com', '[\"ROLE_USER\"]', '$2y$13$FsxiYVSlvk.mEc7Rq3DmFeh5PSmVrIucomTKkiEUJl1e01d1o9cuW', 'Marseille'),
-(2, 'admin@ecogarden.com', '[\"ROLE_ADMIN\"]', '$2y$13$SnKAMo6tWm7aQYDPCIj8muMrUpQfdcQ/CN5c4QZS.nIPaWBDxgeT6', 'Paris');
+(2, 'admin@ecogarden.com', '[\"ROLE_ADMIN\"]', '$2y$13$SnKAMo6tWm7aQYDPCIj8muMrUpQfdcQ/CN5c4QZS.nIPaWBDxgeT6', 'Paris'),
+(3, 'dave@ecogarden.com', '[\"ROLE_ADMIN\"]', '$2y$13$8CH/nPGkdj0Yz19P/PIAN.vsuXeJU7sHQr3RlLVNScKmsa3gW0h5e', 'Bitche');
 
 --
 -- Index pour les tables déchargées
@@ -243,13 +248,13 @@ ALTER TABLE `month`
 -- AUTO_INCREMENT pour la table `tip`
 --
 ALTER TABLE `tip`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Contraintes pour les tables déchargées
