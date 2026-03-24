@@ -25,6 +25,12 @@ final class TipController extends AbstractController
         private readonly SerializerInterface $serializer,
     ) {}
 
+    /**
+     * Liste les conseils du mois courant.
+     *
+     * @param TipRepository $tipRepository
+     * @return JsonResponse
+     */
     #[Route('/tips', name: 'tips_index', methods: ['GET'])]
     public function index(TipRepository $tipRepository): JsonResponse
     {
@@ -48,6 +54,13 @@ final class TipController extends AbstractController
         return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
     }
 
+    /**
+     * Récupère les conseils d'un mois donné.
+     *
+     * @param TipRepository $tipRepository
+     * @param int $month
+     * @return JsonResponse
+     */
     #[Route('/tips/{month}', name: 'tips_show', methods: ['GET'], requirements: ['month' => '^(1[0-2]|[1-9])$'])]
     public function show(TipRepository $tipRepository, int $month): JsonResponse
     {
@@ -70,6 +83,25 @@ final class TipController extends AbstractController
         return new JsonResponse($jsonTips, Response::HTTP_OK, [], true);
     }
 
+    /**
+     * Ajoute un nouveau conseil.
+     * 
+     * Corps JSON attendu :
+     *   - content (string) : texte du conseil
+     *   - monthNumbers (array d'int) : numéros des mois liés (1 à 12)
+     * 
+     * Exemple :
+     * {
+     *     "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+     *     "monthNumbers": [3, 8]
+     * }
+     * 
+     * @param Request $request
+     * @param MonthRepository $monthRepository
+     * @param ValidatorInterface $validator
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
+     */
     #[Route('/tips', name: 'tips_create', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour ajouter un conseil.')]
     public function create(
@@ -122,6 +154,26 @@ final class TipController extends AbstractController
         return new JsonResponse($jsonTip, Response::HTTP_CREATED, [], true);	
     }
 
+    /**
+     * Met à jour un conseil selon son id.
+     *
+     * Corps JSON attendu :
+     *   - content (string) : nouveau texte du conseil (optionnel)
+     *   - monthNumbers (array d'int) : mise à jour des mois liés (optionnel)
+     * 
+     * Exemple :
+     * {
+     *     "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+     *     "monthNumbers": [3, 8, 9]
+     * }
+     * 
+     * @param Request $request
+     * @param Tip $tip
+     * @param MonthRepository $monthRepository
+     * @param ValidatorInterface $validator
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
+     */
     #[Route('/tips/{id}', name: 'tips_update', methods: ['PUT'], requirements: ['id' => '\d+'],)]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour mettre à jour un conseil.')]
     public function update(
@@ -184,6 +236,13 @@ final class TipController extends AbstractController
         return new JsonResponse($jsonTip, Response::HTTP_OK, [], true);	
     }
 
+    /**
+     * Supprime un conseil selon son id.
+     * 
+     * @param EntityManagerInterface $manager
+     * @param Tip $tip
+     * @return JsonResponse
+     */
     #[Route('/tips/{id}', name: 'tips_delete', methods: ['DELETE'], requirements: ['id' => '\d+'],)]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un conseil.')]
     public function delete(EntityManagerInterface $manager, Tip $tip): JsonResponse

@@ -16,6 +16,12 @@ final class WeatherController extends AbstractController
         private readonly SerializerInterface $serializer,
     ) {}
 
+    /**
+     * Récupère la météo de la ville associée au compte authentifié.
+     *
+     * @param WeatherService $weatherService
+     * @return JsonResponse
+     */
     #[Route('/weather', name: 'weather_index', methods: ['GET'])]
     public function index(WeatherService $weatherService): JsonResponse
     {
@@ -34,6 +40,13 @@ final class WeatherController extends AbstractController
         return new JsonResponse($jsonWeather, Response::HTTP_OK, [], true); 
     }
 
+    /**
+     * Récupère la météo d'une ville donnée.
+     *
+     * @param WeatherService $weatherService
+     * @param string $city
+     * @return JsonResponse
+     */
     #[Route('/weather/{city}', name: 'weather_show', methods: ['GET'], requirements: ['city' => '[a-zA-ZÀ-ÿ\' \-]+'])]
     public function show(WeatherService $weatherService, string $city): JsonResponse
     {

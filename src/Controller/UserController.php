@@ -22,6 +22,28 @@ final class UserController extends AbstractController
         private readonly SerializerInterface $serializer,
     ) {}
 
+    /**
+     * Crée un nouveau compte.
+     * 
+     * Corps JSON attendu :
+     *   - email (string) : adresse email (identifiant unique)
+     *   - password (string) : mot de passe (8 caractères minimum)
+     *   - city (string) : nom de la ville
+     * 
+     * Exemple :
+     * {
+     *     "email": "dave@ecogarden.com",
+     *     "password": "password",
+     *     "city": "Bitche"
+     * }
+     * 
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param ValidatorInterface $validator
+     * @param UserPasswordHasherInterface $hasher
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
+     */
     #[Route('/users', name: 'users_create', methods: ['POST'])]
     public function create(
         Request $request,
@@ -65,6 +87,31 @@ final class UserController extends AbstractController
         return new JsonResponse($jsonUser, Response::HTTP_CREATED, [], true);	
     }
 
+    /**
+     * Met à jour un compte selon son id.
+     * 
+     * Corps JSON attendu :
+     *   - email (string) : nouvelle adresse email (optionnel)
+     *   - roles (array de string) : rôles de l'utilisateur (optionnel)
+     *   - password (string) : nouveau mot de passe (optionnel)
+     *   - city (string) : nouvelle ville (optionnel)
+     * 
+     * Exemple :
+     * {
+     *     "email": "dave@ecogarden.com",
+     *     "roles": ["ROLE_ADMIN"],
+     *     "password": "password",
+     *     "city": "Bitche"
+     * }
+     * 
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param User $user
+     * @param ValidatorInterface $validator
+     * @param UserPasswordHasherInterface $hasher
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
+     */
     #[Route('/users/{id}', name: 'users_update', methods: ['PUT'], requirements: ['id' => '\d+'],)]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour mettre à jour un compte.')]
     public function update(
@@ -133,6 +180,13 @@ final class UserController extends AbstractController
         return new JsonResponse($jsonUser, Response::HTTP_OK, [], true);	
     }
 
+    /**
+     * Supprime un compte selon son id.
+     * 
+     * @param EntityManagerInterface $manager
+     * @param User $user
+     * @return JsonResponse
+     */
     #[Route('/users/{id}', name: 'users_delete', methods: ['DELETE'], requirements: ['id' => '\d+'],)]
     #[IsGranted('ROLE_ADMIN', message: 'Vous n\'avez pas les droits suffisants pour supprimer un compte.')]
     public function delete(EntityManagerInterface $manager, User $user): JsonResponse
