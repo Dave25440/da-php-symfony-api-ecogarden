@@ -49,6 +49,26 @@ Ce projet est une première version de test évolutive.
 
 4. **Base de données**
 
+    **Méthode A : Génération des données**
+
+    Créez la base de données :
+    ```bash
+    symfony console doctrine:database:create --if-not-exists
+    ```
+
+    Créez les tables :
+    ```bash
+    symfony console make:migration
+    symfony console doctrine:migrations:migrate
+    ```
+
+    Chargez les fixtures :
+    ```bash
+    symfony console doctrine:fixtures:load
+    ```
+
+    **Méthode B : Utilisation de la sauvegarde**
+
     Importez le fichier **api_ecogarden.sql** dans votre base de données avec phpMyAdmin, Adminer ou directement en ligne de commande :
     ```bash
     mysql -u <utilisateur> -p <nom_de_la_base> < api_ecogarden.sql
